@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import UpDateRow from "./UpdateRow";
 
 export default function TextForm(props) {
   const [text, setText] = useState("");
@@ -22,17 +23,34 @@ export default function TextForm(props) {
   const onAdd = () => {
     setArr([...arr, text]);
   };
+  const onClickAdd = () => {
+    onAdd(text);
+    setText("");
+  };
+
   const onDelete = (ind) => {
-    console.log(ind);
+    // console.log(ind);
     setArr(
-      arr.filter((el, index) => {
-        return ind !== index;
+      arr.filter((item, id) => {
+        return ind !== id;
       })
     );
   };
-  const upDate = (ind) => {
-    setIsEdit(ind);
-    console.log({ ind });
+  const onEdit = (id) => {
+    setIsEdit(id);
+  };
+  const closeEdit = () => {
+    setIsEdit(null);
+  };
+
+  const updateDB = (value, index) => {
+    const updateDB = arr.map((element, id) => {
+      if (id === index) {
+        return value;
+      }
+      return element;
+    });
+    setArr([...updateDB]);
   };
 
   return (
@@ -58,8 +76,8 @@ export default function TextForm(props) {
         <button className="btn btn-primary mx-1" onClick={handleClearClick}>
           clear text
         </button>
-        <button className="btn btn-primary mx-1" onClick={onAdd}>
-          add santext
+        <button className="btn btn-primary mx-1" onClick={onClickAdd}>
+          add us
         </button>
       </div>
       <div className="container my-3">
@@ -74,12 +92,17 @@ export default function TextForm(props) {
           console.log(element);
           return (
             <div>
-              {console.log({ bool: isEdit === ind, isEdit, ind })}
               {isEdit === ind ? (
-                <div>
-                  <input value={element} onChange={() => "hello"} />
-                </div>
+                // <div>
+                <UpDateRow
+                  value={element}
+                  closeEdit={closeEdit}
+                  index={ind}
+                  updateDB={updateDB}
+                />
               ) : (
+                //   <input value={element} onChange={() => "hello"} />
+                // </div>
                 <p>
                   <input type="checkbox" id="vehicle1" value="arr" />
 
@@ -95,7 +118,7 @@ export default function TextForm(props) {
                   <button
                     className="btn btn-sm btn-success mx-2"
                     onClick={() => {
-                      upDate(ind);
+                      onEdit(ind);
                     }}
                   >
                     update
